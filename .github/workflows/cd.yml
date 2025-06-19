@@ -1,0 +1,10 @@
+on:
+  workflow_dispatch:
+    inputs:
+      image_reference:
+        description: 'Docker Image (raqueldione13/go-fibonacci-api:bfc349e)'
+        required: true
+
+environment:
+  name: production
+  url: https://devops-server.intro.codeforall.io:8088
