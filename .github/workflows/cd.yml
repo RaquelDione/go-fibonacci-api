@@ -5,6 +5,22 @@ on:
         description: 'Docker Image (raqueldione13/go-fibonacci-api:bfc349e)'
         required: true
 
-environment:
-  name: production
-  url: https://devops-server.intro.codeforall.io:8088
+
+jobs:
+  deploy:
+  runs-on: ubuntu-latest
+  environment:
+    name: production
+    url: https://devops-server.intro.codeforall.io:8088
+  steps:
+    - name: Deploy to EC2
+      uses: appleboy/ssh-action@v1.0.0
+      with:
+      host: ${{ secrets.EC2_HOST }}
+      username: ${{ secrets.EC2_USERNAME }}
+      password: ${{ secrets.EC2_PASSWORD }}
+      script: |
+        docker pull ${{ github.event.inputs.image_reference }}
+        docker stop fibonacci || true
+        docker rm fibonacci || true
+        docker run -d --name fibonacci -p 8088:8080 ${{ github.event.inputs.image_reference }}
